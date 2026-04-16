@@ -1,6 +1,9 @@
 # requirements.txt
 
 numpy==2.4.4
-pathlib==1.0.1
+# I recommend removing pathlib as it was giving me issues with running PyInstaller, though uncomment it below if needed
+# pathlib==1.0.1
+# I also added pyinstaller to make this more streamlined
+pyinstaller
 pillow==12.2.0
 pyswizzle==1.0.2
