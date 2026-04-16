@@ -8,6 +8,14 @@ except ImportError as e:
 
 SWIZZLE_MODE = 4
 
+def infer_ugctex_encoding(raw_data):
+    match len(raw_data):
+        case 131072:
+            return (512, 512), 4, 4
+        case 98304:
+            return (384, 384), 4, 3
+        case _: # Should be caugth by the previous check, but just in-case.
+            raise ValueError(f"Invalid UGCTex data size: {length} bytes.")
 
 def gammaedit(img: Image, gamma: int = 0.4545):
     def gamma_map(x):
@@ -93,8 +101,7 @@ def png_2_canvas(imagePath, useSrgb=False):
 
 
 def ugctex_2_png(img):
-    convert_size = (512, 512)
-    gob_w, gob_h = 4, 4
+    convert_size, gob_w, gob_h = infer_ugctex_encoding(img)
     bytes_per_block = 8
 
     with open(Path('DDSHeader.ugctex'), 'rb') as file:
@@ -190,7 +197,7 @@ while True:
                 if len(raw_data) == 262144:
                     print('Canvas file detected.')
                     canvas_2_png(raw_data)
-                elif len(raw_data) == 131072:
+                elif len(raw_data) == 131072 or len(raw_data) == 98304:
                     print('UgcTex file detected.')
                     ugctex_2_png(raw_data)
                 else:
